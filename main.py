@@ -411,6 +411,8 @@ def main():
     while True:
         choice = menu_handler.show_main_menu()
         
+        choice = menu_handler.show_main_menu()
+        
         if choice == '1':
             pdf_handler.ensure_pdf_directory()
             pdf_files = pdf_handler.get_pdf_files()
