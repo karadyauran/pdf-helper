@@ -16,7 +16,7 @@ def get_resource_path(relative_path):
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
     except Exception:
-        base_path = os.path.abspath(".")
+        base_path = os.path.abspath(os.path.dirname(__file__))
     
     return os.path.join(base_path, relative_path)
 
@@ -342,7 +342,7 @@ def retry_prompt(prompt_func, max_retries=3):
             print(f"Error: {e}. Retrying ({attempt + 1}/{max_retries})...")
             sleep(1)
     print("Max retries reached. Exiting.")
-    exit()
+    sys.exit()
 
 class MenuHandler:
     def __init__(self):
@@ -504,7 +504,7 @@ def main():
 
         elif choice == '3':
             print("\nGoodbye!")
-            exit()
+            sys.exit()
 
 if __name__ == "__main__":
     main()
