@@ -7,6 +7,17 @@ import yaml
 import os
 import inquirer
 from datetime import datetime
+import sys
+
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    
+    return os.path.join(base_path, relative_path)
 
 class PDFExtractor:
     def __init__(self, pdf_path: str):
@@ -290,7 +301,7 @@ class ExcelExporter:
 
 class Settings:
     def __init__(self):
-        self.settings_path = "settings.yaml"
+        self.settings_path = get_resource_path("settings.yaml")
         self.default_settings = {
             "title_keywords": ["Weizen", "F-Weizen"]
         }
@@ -370,7 +381,7 @@ class MenuHandler:
 
 class PDFFileHandler:
     def __init__(self):
-        self.pdf_dir = "pdf-files"
+        self.pdf_dir = get_resource_path("pdf-files")
 
     def ensure_pdf_directory(self):
         if not os.path.exists(self.pdf_dir):
@@ -433,8 +444,8 @@ def main():
             title_keywords = menu_handler.settings["title_keywords"]
             
             # Create excel-output directory if it doesn't exist
-            if not os.path.exists("excel-output"):
-                os.makedirs("excel-output")
+            if not os.path.exists(get_resource_path("excel-output")):
+                os.makedirs(get_resource_path("excel-output"))
                 
             # Get current date in a readable format
             current_time = datetime.now().strftime("%d-%B-%Y_%H-%M")
@@ -467,7 +478,7 @@ def main():
                 
                 print(f"\nProcessed {os.path.basename(pdf_path)}")
 
-            output_file = f"excel-output/Combined_Market_Data_{current_time}.xlsx"
+            output_file = os.path.join(get_resource_path("excel-output"), f"Combined_Market_Data_{current_time}.xlsx")
             
             # Export combined data to Excel
             excel_exporter = ExcelExporter(output_file)

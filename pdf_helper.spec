@@ -6,8 +6,18 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=['openpyxl'],
+    datas=[
+        ('settings.yaml', '.'),
+        ('pdf-files', 'pdf-files'),
+        ('excel-output', 'excel-output')
+    ],
+    hiddenimports=[
+        'pdfplumber',
+        'pandas',
+        'yaml',
+        'inquirer',
+        'openpyxl'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -17,7 +27,12 @@ a = Analysis(
     cipher=block_cipher,
     noarchive=False,
 )
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+pyz = PYZ(
+    a.pure,
+    a.zipped_data,
+    cipher=block_cipher
+)
 
 exe = EXE(
     pyz,
