@@ -4,10 +4,8 @@ block_cipher = None
 
 a = Analysis(
     ['main.py'],
-    pathex=[],
-    binaries=[
-        # Removed readchar from binaries
-    ],
+    pathex=['.'],
+    binaries=[],
     datas=[
         ('settings.yaml', '.'),
         ('pdf-files', 'pdf-files'),
