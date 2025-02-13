@@ -8,6 +8,7 @@ import os
 import inquirer
 from datetime import datetime
 import sys
+import readchar
 
 def get_resource_path(relative_path):
     """Get absolute path to resource, works for dev and for PyInstaller"""
@@ -332,6 +333,17 @@ def greet_user():
     print("-" * 30)
     print()
 
+def retry_prompt(prompt_func, max_retries=3):
+    """Retry a prompt function if it fails."""
+    for attempt in range(max_retries):
+        try:
+            return prompt_func()
+        except Exception as e:
+            print(f"Error: {e}. Retrying ({attempt + 1}/{max_retries})...")
+            sleep(1)
+    print("Max retries reached. Exiting.")
+    exit()
+
 class MenuHandler:
     def __init__(self):
         self.settings_manager = Settings()
@@ -349,7 +361,7 @@ class MenuHandler:
                      ('Exit', '3')
                  ])
         ]
-        return inquirer.prompt(questions)['choice']
+        return retry_prompt(lambda: inquirer.prompt(questions)['choice'])
 
     def show_settings_menu(self):
         clear_console()
@@ -363,7 +375,7 @@ class MenuHandler:
                      ('Edit keywords', 'edit')
                      ])
         ]
-        return inquirer.prompt(keyword_questions)['action']
+        return retry_prompt(lambda: inquirer.prompt(keyword_questions)['action'])
 
     def edit_keywords(self):
         clear_console()
@@ -373,7 +385,7 @@ class MenuHandler:
             add_question = [
                 inquirer.Text('keyword', message="Enter a keyword (or press Enter to finish)")
             ]
-            keyword = inquirer.prompt(add_question)['keyword']
+            keyword = retry_prompt(lambda: inquirer.prompt(add_question)['keyword'])
             if not keyword:
                 break
             new_keywords.append(keyword)
@@ -405,7 +417,7 @@ class PDFFileHandler:
                          message="Select PDF files to process (use space to select, enter to confirm)",
                          choices=choices)
         ]
-        result = inquirer.prompt(questions)
+        result = retry_prompt(lambda: inquirer.prompt(questions))
         if result is None:
             return []
             
@@ -420,8 +432,6 @@ def main():
     pdf_handler = PDFFileHandler()
 
     while True:
-        choice = menu_handler.show_main_menu()
-        
         choice = menu_handler.show_main_menu()
         
         if choice == '1':

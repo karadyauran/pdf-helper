@@ -5,7 +5,9 @@ block_cipher = None
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[],
+    binaries=[
+        # Removed readchar from binaries
+    ],
     datas=[
         ('settings.yaml', '.'),
         ('pdf-files', 'pdf-files'),
@@ -85,7 +87,7 @@ a = Analysis(
         'wcwidth',
         'xmod'
     ],
-    hookspath=[],
+    hookspath=['./hooks'],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
@@ -120,6 +122,5 @@ exe = EXE(
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
-    entitlements_file=None,
-    icon='icon.ico'  # Optional: Add your icon file here
+    entitlements_file=None
 )
